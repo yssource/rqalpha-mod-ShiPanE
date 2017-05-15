@@ -52,12 +52,15 @@ class ShipaneMod(AbstractMod):
     def tear_down(self, code, exception=None):
         pass
 
-    def _submit(self, account, data):
+    def _submit(self, event):
+        account = event.account
+        data = event.trade
         if not isinstance(account, StockAccount):
             # 不是股票账户的 Order Event 忽略
             return
-        if self._trigger_event == EVENT.ORDER:
-            return self._submit_by_order(data)
+        # EVENT.ORDER has been depreciated
+        # if self._trigger_event == EVENT.ORDER:
+        #     return self._submit_by_order(data)
         if self._trigger_event == EVENT.TRADE:
             return self._submit_by_trade(data)
 

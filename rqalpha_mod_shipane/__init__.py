@@ -21,7 +21,7 @@ __config__ = {
     "port": 8888,
     "key": "",
     "client": "",
-    "trigger_event": "TRADE"
+    "trigger_event": "trade"
 }
 
 
