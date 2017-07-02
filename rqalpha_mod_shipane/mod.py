@@ -22,7 +22,7 @@ from rqalpha.interface import AbstractMod
 from rqalpha.events import EVENT, parse_event
 from rqalpha.const import ORDER_TYPE
 from rqalpha.utils.logger import user_log
-from rqalpha.model.account import StockAccount
+from rqalpha.const import DEFAULT_ACCOUNT_TYPE
 
 
 class ShipaneMod(AbstractMod):
@@ -53,7 +53,7 @@ class ShipaneMod(AbstractMod):
         pass
 
     def _submit(self, account, data):
-        if not isinstance(account, StockAccount):
+        if account.type != DEFAULT_ACCOUNT_TYPE.STOCK.name:
             # 不是股票账户的 Order Event 忽略
             return
         if self._trigger_event == EVENT.ORDER:
@@ -107,7 +107,7 @@ class ShipaneMod(AbstractMod):
             user_log.error("[实盘易] 下单异常：" + str(e))
 
     def _cancel(self, account, order):
-        if not isinstance(account, StockAccount):
+        if account.type != DEFAULT_ACCOUNT_TYPE.STOCK.name:
             # 不是股票账户的 Cancel Event 忽略
             return
         order_id = order.order_id
