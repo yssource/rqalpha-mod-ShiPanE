@@ -52,14 +52,15 @@ class ShipaneMod(AbstractMod):
     def tear_down(self, code, exception=None):
         pass
 
-    def _submit(self, account, data):
+    def _submit(self, event):
+        account = event.account
         if account.type != DEFAULT_ACCOUNT_TYPE.STOCK.name:
             # 不是股票账户的 Order Event 忽略
             return
         if self._trigger_event == EVENT.ORDER:
-            return self._submit_by_order(data)
+            return self._submit_by_order(event.order)
         if self._trigger_event == EVENT.TRADE:
-            return self._submit_by_trade(data)
+            return self._submit_by_trade(event.trade)
 
     def _submit_by_order(self, order):
         """
@@ -106,10 +107,12 @@ class ShipaneMod(AbstractMod):
         except Exception as e:
             user_log.error("[实盘易] 下单异常：" + str(e))
 
-    def _cancel(self, account, order):
+    def _cancel(self, event):
+        account = event.account
         if account.type != DEFAULT_ACCOUNT_TYPE.STOCK.name:
             # 不是股票账户的 Cancel Event 忽略
             return
+        order = event.order
         order_id = order.order_id
         try:
             if order_id in self._order_id_map:
